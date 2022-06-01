@@ -1,15 +1,14 @@
 use clap::Parser;
+use std::process;
 
-/// A no-dependency RDMA connection manager for academic research
-#[derive(Parser, Debug)]
-#[clap(author, version, about, long_about = None)]
-struct Args {
-    /// UDP port to listen on
-    #[clap(short, long, default_value_t = 3369)]
-    port: u16,
-}
+use rdmgr::{Args, run_main};
 
 fn main() {
     let args = Args::parse();
-    println!("{}", args.port);
+    println!("Accepting client requests at UDP port {} / TCP port {} ...", args.udpport, args.tcpport);
+    
+    if let Err(err) = run_main(args) {
+        eprintln!("Error: {:?}", err);
+        process::exit(-1);
+    }
 }
